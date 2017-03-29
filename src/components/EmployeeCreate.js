@@ -1,11 +1,17 @@
 import React, {Component} from 'react';
-import {Picker} from 'react-native';
+import {Picker, Text} from 'react-native';
 import {connect} from 'react-redux';
-import {employeeUpdate} from '../actions';
+import {employeeUpdate, employeeCreate} from '../actions';
 import {Card, CardSection, Input, Button} from './common';
 
 
 class EmployeeCreate extends Component {
+
+    onButtonPress(){
+           const {name, phone, shift} = this.props;
+           this.props.employeeCreate({ name, phone, shift: shift || 'Monday'  });
+    }
+
     render(){
         return(
             <Card>
@@ -26,7 +32,9 @@ class EmployeeCreate extends Component {
                          onChangeText={value => this.props.employeeUpdate({ prop: 'phone', value })}
                     />
                 </CardSection>
+
                 <CardSection>
+                <Text style={styles.pickerTextStyle}>Shift</Text>
                     <Picker
                         style = {{ flex: 1}}
                         selectedItem= {this.props.shift}
@@ -39,11 +47,11 @@ class EmployeeCreate extends Component {
                             <Picker.Item label='Friday' value='Friday' />
                             <Picker.Item label='Saturday' value='Saturday' />
                             <Picker.Item label='Sunday' value='Sunday' />
-
                     </Picker>
                 </CardSection>
+
                 <CardSection>
-                    <Button>
+                    <Button onPress={this.onButtonPress.bind(this)}>
                         Save
                     </Button>
                 </CardSection>
@@ -52,10 +60,18 @@ class EmployeeCreate extends Component {
     }
 }
 
+const styles ={
+    pickerTextStyle: {
+        fontSize:18,
+        paddingLeft: 20
+    }
+
+}
+
 const mapToStateProps = (state) => {
     const { name, phone, shift} = state.employeeForm;
     return {name, phone, shift};
 };
 
 
-export default connect(mapToStateProps, {employeeUpdate}) (EmployeeCreate);
+export default connect(mapToStateProps, {employeeUpdate, employeeCreate}) (EmployeeCreate);
